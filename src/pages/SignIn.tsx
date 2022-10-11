@@ -1,12 +1,130 @@
-import React from 'react';
-import {Text, View} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import {RootStackParamList} from '../../App';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-function SignIn() {
+type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
+function SignIn({navigation}: SignInScreenProps) {
+  const [email, setEmail] = useState('');
+  const [password, serPassword] = useState('');
+  const emailRef = useRef<TextInput | null>(null); //generic
+  const passwordRef = useRef<TextInput | null>(null);
+
+  const onChangeEmail = useCallback(text => {
+    setEmail(text);
+  }, []);
+  const onChangePassword = useCallback(text => {
+    serPassword(text);
+  }, []);
+
+  const onSubmit = useCallback(() => {
+    if (!email || !email.trim()) {
+      return Alert.alert('Alert', 'Please enter a valid email.');
+    }
+    if (!password || !password.trim()) {
+      return Alert.alert('Alert', 'Please enter a valid password.');
+    }
+    return Alert.alert('Alert', 'Logged in successfully!');
+  }, [email, password]);
+
+  const toSignUp = useCallback(() => {
+    navigation.navigate('SignUp');
+  }, [navigation]);
+
+  const canGoNext = email && password;
   return (
     <View>
-      <Text>Sign In</Text>
+      <View style={styles.inputWrapper}>
+        <Text style={styles.label}>E-mail</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Enter your email"
+          value={email}
+          onChangeText={onChangeEmail}
+          importantForAutofill="yes"
+          autoComplete="email"
+          textContentType="emailAddress"
+          keyboardType="email-address"
+          returnKeyType="next"
+          onSubmitEditing={() => {
+            passwordRef.current?.focus();
+          }}
+          blurOnSubmit={false}
+          ref={emailRef}
+          clearButtonMode="while-editing"
+        />
+      </View>
+      <View style={styles.inputWrapper}>
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Enter your password"
+          value={password}
+          onChangeText={onChangePassword}
+          secureTextEntry
+          importantForAutofill="yes"
+          autoComplete="password"
+          textContentType="password"
+          keyboardType="number-pad"
+          ref={passwordRef}
+          onSubmitEditing={onSubmit}
+        />
+      </View>
+      <View style={styles.buttonZone}>
+        <Pressable
+          onPress={onSubmit}
+          style={
+            !canGoNext
+              ? styles.loginButton
+              : StyleSheet.compose(styles.loginButton, styles.loginButtonActive)
+          }
+          disabled={!canGoNext}>
+          <Text style={styles.loginButtonText}>Log In</Text>
+        </Pressable>
+        <Pressable onPress={toSignUp}>
+          <Text>Sign up</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
+const styles = StyleSheet.create({
+  inputWrapper: {
+    padding: 30,
+  },
+  textInput: {
+    padding: 5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  label: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  loginButton: {
+    backgroundColor: 'gray',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  loginButtonActive: {
+    backgroundColor: 'blue',
+  },
+  loginButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  buttonZone: {
+    alignItems: 'center',
+  },
+});
 export default SignIn;
