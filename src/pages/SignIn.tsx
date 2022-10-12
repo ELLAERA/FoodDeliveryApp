@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {RootStackParamList} from '../../App';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import DismissKeyBoardView from '../components/DismissKeyBoardView';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 function SignIn({navigation}: SignInScreenProps) {
@@ -40,7 +41,7 @@ function SignIn({navigation}: SignInScreenProps) {
 
   const canGoNext = email && password;
   return (
-    <View>
+    <DismissKeyBoardView>
       <View style={styles.inputWrapper}>
         <Text style={styles.label}>E-mail</Text>
         <TextInput
@@ -92,7 +93,7 @@ function SignIn({navigation}: SignInScreenProps) {
           <Text>Sign up</Text>
         </Pressable>
       </View>
-    </View>
+    </DismissKeyBoardView>
   );
 }
 
