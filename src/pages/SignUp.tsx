@@ -11,6 +11,7 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../App';
 import DissmissKeyBoardView from '../components/DismissKeyboardView';
+import axios from 'axios';
 
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
@@ -31,7 +32,7 @@ function SignUp({navigation}: SignUpScreenProps) {
   const onChangePassword = useCallback(text => {
     setPassword(text.trim());
   }, []);
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!email || !email.trim()) {
       return Alert.alert('Alert', 'Please enter your email.');
     }
@@ -42,19 +43,27 @@ function SignUp({navigation}: SignUpScreenProps) {
       return Alert.alert('Alert', 'Please enter your password.');
     }
     if (
-      !/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/.test(
-        email,
-      )
+        !/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/.test(
+            email,
+        )
     ) {
       return Alert.alert('Alert', 'Please enter a valid email.');
     }
     if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
       return Alert.alert(
-        'Alert',
-        'Passwords must have at least 8 characters and contain : letters, numbers, and symbols.',
+          'Alert',
+          'Passwords must have at least 8 characters and contain : letters, numbers, and symbols.',
       );
     }
     console.log(email, name, password);
+    try {
+      const response = await axios.post('/user', {email, name, password});
+      console.log(response);
+    } catch (error) {
+      console.error(error.response);
+    } finally {
+
+    }
     Alert.alert('Alert', 'Signed up successfully!');
   }, [email, name, password]);
 
