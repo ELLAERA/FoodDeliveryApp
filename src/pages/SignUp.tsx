@@ -1,5 +1,6 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Platform,
   Pressable,
@@ -11,11 +12,12 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../App';
 import DissmissKeyBoardView from '../components/DismissKeyboardView';
-import axios from 'axios';
+import axios, {Axios, AxiosError} from 'axios';
 
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
 function SignUp({navigation}: SignUpScreenProps) {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +35,9 @@ function SignUp({navigation}: SignUpScreenProps) {
     setPassword(text.trim());
   }, []);
   const onSubmit = useCallback(async () => {
+    if (loading) {
+      return;
+    }
     if (!email || !email.trim()) {
       return Alert.alert('Alert', 'Please enter your email.');
     }
@@ -43,29 +48,43 @@ function SignUp({navigation}: SignUpScreenProps) {
       return Alert.alert('Alert', 'Please enter your password.');
     }
     if (
-        !/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/.test(
-            email,
-        )
+      !/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/.test(
+        email,
+      )
     ) {
       return Alert.alert('Alert', 'Please enter a valid email.');
     }
     if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
       return Alert.alert(
-          'Alert',
-          'Passwords must have at least 8 characters and contain : letters, numbers, and symbols.',
+        'Alert',
+        'Passwords must have at least 8 characters and contain : letters, numbers, and symbols.',
       );
     }
     console.log(email, name, password);
     try {
-      const response = await axios.post('/user', {email, name, password});
+      setLoading(true);
+      const response = await axios.post(
+        '/user',
+        {email, name, password},
+        {
+          headers: {
+            token: 'key',
+          },
+        },
+      );
       console.log(response);
+      Alert.alert('Alert', 'Sign up successfully.');
     } catch (error) {
-      console.error(error.response);
+      const errorResponse = (error as AxiosError).response;
+      console.error();
+      if (errorResponse) {
+        Alert.alert('Alert', errorResponse.data.message);
+      }
     } finally {
-
+      setLoading(false);
     }
     Alert.alert('Alert', 'Signed up successfully!');
-  }, [email, name, password]);
+  }, [loading, email, name, password]);
 
   const canGoNext = email && name && password;
   return (
@@ -126,9 +145,13 @@ function SignUp({navigation}: SignUpScreenProps) {
               ? StyleSheet.compose(styles.loginButton, styles.loginButtonActive)
               : styles.loginButton
           }
-          disabled={!canGoNext}
+          disabled={!canGoNext || loading}
           onPress={onSubmit}>
-          <Text style={styles.loginButtonText}>Sign up</Text>
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.loginButtonText}>Sign up</Text>
+          )}
         </Pressable>
       </View>
     </DissmissKeyBoardView>
