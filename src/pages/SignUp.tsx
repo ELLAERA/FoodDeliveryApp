@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../App';
+import {RootStackParamList} from '../../AppInner';
 import DissmissKeyBoardView from '../components/DismissKeyboardView';
 import axios, {Axios, AxiosError} from 'axios';
 import Config from 'react-native-config';
