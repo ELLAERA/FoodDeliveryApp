@@ -55,7 +55,7 @@ function Settings() {
     <View>
       <View style={styles.money}>
         <Text style={styles.moneyText}>
-          {name}'s profits ${' '}
+          {name}'s profits ￦{' '}
           <Text style={{fontWeight: 'bold'}}>
             {money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           </Text>
@@ -68,7 +68,7 @@ function Settings() {
             styles.loginButtonActive,
           )}
           onPress={onLogout}>
-          <Text style={styles.loginButtonText}>로그아웃</Text>
+          <Text style={styles.loginButtonText}>Logout</Text>
         </Pressable>
       </View>
     </View>
