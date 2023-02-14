@@ -1,15 +1,52 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useState} from 'react';
-import {Order} from '../slices/order';
+import orderSlice, {Order} from '../slices/order';
+import {useAppDispatch} from '../store';
+import axios, {AxiosError} from 'axios';
+import {useSelector} from 'react-redux';
+import Config from 'react-native-config';
+import {RootState} from '../store/reducer';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {LoggedInParamList} from '../../AppInner';
 
 function EachOrder({item}: {item: Order}) {
+  const dispatch = useAppDispatch();
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+  const [loading, setLoading] = useState(false);
   const [detail, setDetail] = useState(false);
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const toggleDetail = useCallback(() => {
     setDetail(prev => !prev);
   }, []);
 
-  const onAccept = useCallback(() => {}, []);
-  const onReject = useCallback(() => {}, []);
+  const onAccept = useCallback(async () => {
+    if (!accessToken) {
+      return;
+    }
+    try {
+      setLoading(false);
+      await axios.post(
+        `${Config.API_URL}/accept`,
+        {orderId: item.orderId},
+        {headers: {authorization: `Bearer ${accessToken}`}},
+      );
+      dispatch(orderSlice.actions.acceptOrder(item.orderId));
+      navigation.navigate('Delivery');
+    } catch (error) {
+      const errorResponse = (error as AxiosError).response;
+      if (errorResponse?.status === 400) {
+        Alert.alert('Alert', (errorResponse.data as {message: string}).message);
+        dispatch(orderSlice.actions.rejectOrder(item.orderId));
+      }
+    } finally {
+      setLoading(true);
+    }
+    dispatch(orderSlice.actions.acceptOrder(item.orderId));
+  }, [accessToken, dispatch, item.orderId, navigation]);
+
+  const onReject = useCallback(() => {
+    dispatch(orderSlice.actions.rejectOrder(item.orderId));
+  }, [dispatch, item.orderId]);
 
   return (
     <View key={item.orderId} style={styles.orderContainer}>
@@ -26,10 +63,16 @@ function EachOrder({item}: {item: Order}) {
             <Text>Naver Map</Text>
           </View>
           <View style={styles.buttonWrapper}>
-            <Pressable onPress={onAccept} style={styles.acceptButton}>
+            <Pressable
+              onPress={onAccept}
+              disabled={loading}
+              style={styles.acceptButton}>
               <Text style={styles.buttonText}> Accept </Text>
             </Pressable>
-            <Pressable onPress={onReject} style={styles.rejectButton}>
+            <Pressable
+              onPress={onReject}
+              disabled={loading}
+              style={styles.rejectButton}>
               <Text style={styles.buttonText}> Reject </Text>
             </Pressable>
           </View>
