@@ -8,6 +8,7 @@ import Config from 'react-native-config';
 import {RootState} from '../store/reducer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../AppInner';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 function EachOrder({item}: {item: Order}) {
   const dispatch = useAppDispatch();
@@ -37,6 +38,27 @@ function EachOrder({item}: {item: Order}) {
       if (errorResponse?.status === 400) {
         Alert.alert('Alert', (errorResponse.data as {message: string}).message);
         dispatch(orderSlice.actions.rejectOrder(item.orderId));
+      }
+      if (errorResponse?.status === 419) {
+        const refreshToken = await EncryptedStorage.getItem('refreshToken');
+        const response = await axios.post(
+          `${Config.API_URL}/refreshToken`,
+          {},
+          {
+            headers: {
+              authorization: `Bearer ${refreshToken}`,
+            },
+          },
+        );
+        await axios.post(
+          `${Config.API_URL}/accept`,
+          {orderId: item.orderId},
+          {
+            headers: {
+              authorization: `Bearer ${response.data.data.accessToken}`,
+            },
+          },
+        );
       }
     } finally {
       setLoading(true);
