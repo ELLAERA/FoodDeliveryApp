@@ -40,6 +40,40 @@ function AppInner() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    axios.interceptors.response.use(
+      response => {
+        console.log(response);
+        return response;
+      },
+      async error => {
+        const {
+          config,
+          response: {status},
+        } = error;
+        if (status === 419) {
+          if (error.response.data.code === 'expired') {
+            const originalRequest = config;
+            const refreshToken = await EncryptedStorage.getItem('refreshToken');
+            const {data} = await axios.post(
+              `${Config.API_URL}/refreshToken`,
+              {},
+              {
+                headers: {
+                  authorization: `Bearer ${refreshToken}`,
+                },
+              },
+            );
+            dispatch(userSlice.actions.setAccessToken(data.data.accessToken));
+            originalRequest.headers.authorization = `Bearer ${data.data.accessToken}`;
+            return axios(originalRequest);
+          }
+        }
+        return Promise.reject(error);
+      },
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
     const callback = (data: any) => {
       console.log(data);
       dispatch(orderSlice.actions.addOrder(data));
