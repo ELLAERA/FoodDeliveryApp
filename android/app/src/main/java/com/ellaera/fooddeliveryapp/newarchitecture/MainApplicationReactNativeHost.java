@@ -1,4 +1,4 @@
-package com.fooddeliveryapp.newarchitecture;
+package com.ellaera.fooddeliveryapp.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.fooddeliveryapp.BuildConfig;
-import com.fooddeliveryapp.newarchitecture.components.MainComponentsRegistry;
-import com.fooddeliveryapp.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.ellaera.fooddeliveryapp.BuildConfig;
+import com.ellaera.fooddeliveryapp.newarchitecture.components.MainComponentsRegistry;
+import com.ellaera.fooddeliveryapp.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
