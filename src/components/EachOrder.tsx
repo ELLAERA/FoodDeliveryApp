@@ -16,6 +16,7 @@ import {RootState} from '../store/reducer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../AppInner';
 import NaverMapView, {Marker, Path} from 'react-native-nmap';
+import getDistanceFromLatLonInKm from '../util';
 
 function EachOrder({item}: {item: Order}) {
   const dispatch = useAppDispatch();
@@ -62,6 +63,15 @@ function EachOrder({item}: {item: Order}) {
       <Pressable onPress={toggleDetail} style={styles.info}>
         <Text style={styles.eachInfo}>
           ￦ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+        </Text>
+        <Text style={styles.eachInfo}>
+          {getDistanceFromLatLonInKm(
+            start.latitude,
+            start.longitude,
+            end.latitude,
+            end.longitude,
+          ).toFixed(1)}
+          km
         </Text>
         <Text>Address1</Text>
         <Text>Address2</Text>
