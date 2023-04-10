@@ -35,8 +35,20 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<key>NSCameraUsageDescription</key>
+    <string>Camera permission is required to take pictures of delivery completed.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Location permission is required for location verification during delivery.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Location permission is required for location verification during delivery.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Location permission is required for location verification during delivery.</string>
+    <key>NSMotionUsageDescription</key>
+    <string>Location permission is required for location verification during delivery.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Photo library permission is required to select a picture.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Photo library permission is required to select a picture.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
