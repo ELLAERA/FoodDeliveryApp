@@ -8,19 +8,33 @@ import {
   Text,
   View,
 } from 'react-native';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {LoggedInParamList} from '../../AppInner';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
+import axios, {AxiosError} from 'axios';
+import Config from 'react-native-config';
+import {useSelector} from 'react-redux';
+import {RootState} from '../store/reducer';
+import orderSlice from '../slices/order';
+import {useAppDispatch} from '../store';
 
 function Complete() {
+  const dispatch = useAppDispatch();
   const route = useRoute<RouteProp<LoggedInParamList>>();
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
   const [image, setImage] = useState<{
     uri: string;
     name: string;
     type: string;
   }>();
   const [preview, setPreview] = useState<{uri: string}>();
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
 
   const onResponse = useCallback(async (response: any) => {
     console.log(response.width, response.height, response.exif);
@@ -76,7 +90,26 @@ function Complete() {
       Alert.alert('Alert', 'Invalid order.');
       return;
     }
-  }, [image, orderId]);
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('orderId', orderId);
+    try {
+      await axios.post(`${Config.API_URL}/complete`, formData, {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+      Alert.alert('Alert', 'Completed.');
+      navigation.goBack();
+      navigation.navigate('Settings');
+      dispatch(orderSlice.actions.rejectOrder(orderId));
+    } catch (error) {
+      const errorResponse = (error as AxiosError).response;
+      if (errorResponse) {
+        Alert.alert('Alert', (errorResponse.data as {message: string}).message);
+      }
+    }
+  }, [dispatch, navigation, image, orderId, accessToken]);
 
   return (
     <View>
