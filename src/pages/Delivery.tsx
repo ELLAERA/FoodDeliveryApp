@@ -10,7 +10,7 @@ function Delivery() {
     <Stack.Navigator initialRouteName="Ing">
       <Stack.Screen name="Ing" component={Ing} options={{headerShown: false}} />
       <Stack.Screen
-        name="complete"
+        name="Complete"
         component={Complete}
         options={{headerShown: false}}
       />
