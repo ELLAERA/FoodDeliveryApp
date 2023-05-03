@@ -27,6 +27,7 @@ public class TMapModule extends ReactContextBaseJavaModule {
     public void openNavi(String name, String longitude, String latitude, String vehicle, Promise promise) {
         TMapTapi tMapTapi = new TMapTapi(getReactApplicationContext());
         boolean isTMapApp = tMapTapi.isTmapApplicationInstalled();
+        Log.i("TMap", isTMapApp ? "installed" : "NOT installed");
         if (isTMapApp) {
             HashMap pathInfo = new HashMap();
             pathInfo.put("rGoName", name);
