@@ -19,6 +19,7 @@ import {Alert} from 'react-native';
 import userSlice from './src/slices/user';
 import orderSlice from './src/slices/order';
 import usePermissions from './src/hooks/usePermissions';
+import SplashScreen from 'react-native-splash-screen';
 
 export type LoggedInParamList = {
   Orders: undefined;
@@ -105,6 +106,7 @@ function AppInner() {
       try {
         const token = await EncryptedStorage.getItem('refreshToken');
         if (!token) {
+          SplashScreen.hide();
           return;
         }
         const response = await axios.post(
@@ -129,7 +131,7 @@ function AppInner() {
           Alert.alert('Alert', 'Re-login required');
         }
       } finally {
-        // TODO: Remove SplashScreen
+        SplashScreen.hide();
       }
     };
     getTokenAndRefresh();
