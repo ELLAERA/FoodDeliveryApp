@@ -20,6 +20,8 @@ import userSlice from './src/slices/user';
 import orderSlice from './src/slices/order';
 import usePermissions from './src/hooks/usePermissions';
 import SplashScreen from 'react-native-splash-screen';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 export type LoggedInParamList = {
   Orders: undefined;
@@ -144,17 +146,32 @@ function AppInner() {
           <Tab.Screen
             name="Orders"
             component={Orders}
-            options={{title: 'Order list'}}
+            options={{
+              title: 'Order list',
+              headerTitleStyle: {fontSize: 25},
+              tabBarLabelStyle: {fontSize: 12},
+              tabBarIcon: () => <FontAwesome5Icon name="list" size={20} />,
+            }}
           />
           <Tab.Screen
             name="Delivery"
             component={Delivery}
-            options={{headerShown: false}}
+            options={{
+              headerShown: false,
+              title: 'Map',
+              tabBarLabelStyle: {fontSize: 12},
+              tabBarIcon: () => <FontAwesome5Icon name="map" size={20} />,
+            }}
           />
           <Tab.Screen
             name="Settings"
             component={Settings}
-            options={{title: 'Settings'}}
+            options={{
+              title: 'Settings',
+              headerTitleStyle: {fontSize: 25},
+              tabBarLabelStyle: {fontSize: 12},
+              tabBarIcon: () => <FontAwesomeIcon name="gear" size={25} />,
+            }}
           />
         </Tab.Navigator>
       ) : (
