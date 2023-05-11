@@ -1,5 +1,13 @@
 import React, {useCallback, useEffect} from 'react';
-import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import Config from 'react-native-config';
 import {useAppDispatch} from '../store';
@@ -7,10 +15,13 @@ import userSlice from '../slices/user';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import orderSlice, {Order} from '../slices/order';
+import FastImage from 'react-native-fast-image';
 
 function Settings() {
   const money = useSelector((state: RootState) => state.user.money);
   const name = useSelector((state: RootState) => state.user.name);
+  const completes = useSelector((state: RootState) => state.order.completes);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const dispatch = useAppDispatch();
 
@@ -24,6 +35,20 @@ function Settings() {
     }
     getMoney();
   }, [accessToken, dispatch]);
+
+  useEffect(() => {
+    async function getCompletes() {
+      const response = await axios.get<{data: number}>(
+        `${Config.API_URL}/completes`,
+        {
+          headers: {authorization: `Bearer ${accessToken}`},
+        },
+      );
+      console.log('completes', response.data);
+      dispatch(orderSlice.actions.setCompletes(response.data.data));
+    }
+    getCompletes();
+  }, [dispatch, accessToken]);
 
   const onLogout = useCallback(async () => {
     try {
@@ -51,6 +76,19 @@ function Settings() {
     }
   }, [accessToken, dispatch]);
 
+  const renderItem = useCallback(({item}: {item: Order}) => {
+    return (
+      <FastImage
+        source={{uri: `${Config.API_URL}/${item.image}`}}
+        resizeMode="cover"
+        style={{
+          height: Dimensions.get('window').width / 3 - 10,
+          width: Dimensions.get('window').width / 3 - 10,
+          margin: 5,
+        }}
+      />
+    );
+  }, []);
   return (
     <View>
       <View style={styles.money}>
@@ -60,6 +98,14 @@ function Settings() {
             {money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           </Text>
         </Text>
+      </View>
+      <View>
+        <FlatList
+          data={completes}
+          keyExtractor={o => o.orderId}
+          numColumns={3}
+          renderItem={renderItem}
+        />
       </View>
       <View style={styles.buttonZone}>
         <Pressable

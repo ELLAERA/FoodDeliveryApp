@@ -11,6 +11,9 @@ export interface Order {
     longitude: number;
   };
   price: number;
+  image?: string;
+  rider?: string;
+  completedAt: string;
 }
 interface InitialState {
   orders: Order[];

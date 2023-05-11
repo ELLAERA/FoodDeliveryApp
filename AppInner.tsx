@@ -170,6 +170,7 @@ function AppInner() {
               title: 'Settings',
               headerTitleStyle: {fontSize: 25},
               tabBarLabelStyle: {fontSize: 12},
+              unmountOnBlur: true,
               tabBarIcon: () => <FontAwesomeIcon name="gear" size={25} />,
             }}
           />
