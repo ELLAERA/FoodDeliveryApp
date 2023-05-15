@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-apply plugin: "com.android.application"
+apply plugin: "com.google.gms.google-services"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
@@ -251,6 +251,9 @@ android {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:32.0.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
     implementation 'com.naver.maps:map-sdk:3.14.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "366990317617",
+    "project_id": "food-delivery-app-001",
+    "storage_bucket": "food-delivery-app-001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366990317617:android:e4f5734336dabb561f1d10",
+        "android_client_info": {
+          "package_name": "com.ellaera.fooddeliveryapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366990317617-cg233td1t2pdh1ingu0tin169n4j7cg9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALhRihz4kpjw2qtKiujiJG3JlKD8NLLYc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366990317617-cg233td1t2pdh1ingu0tin169n4j7cg9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
